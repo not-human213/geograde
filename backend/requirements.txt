@@ -1,0 +1,8 @@
+python-dotenv==1.0.0
+mysql-connector-python==8.0.33
+requests==2.31.0
+python-decouple==3.8
+fastapi==0.104.1
+uvicorn==0.24.0
+passlib[bcrypt]==1.7.4
+fastapi[all] 
