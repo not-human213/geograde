@@ -1,3 +1,28 @@
+const API_BASE_URL = "http://192.168.0.103:8000"; // Centralized API Base URL
+
+/**
+ * Centralized fetch utility to handle API requests with error handling
+ */
+const apiFetch = async (endpoint: string, options: RequestInit): Promise<any> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+
+    const responseData = await response.json();
+    if (!response.ok) {
+      const errorMessage = responseData.detail || responseData.message || "An error occurred";
+      throw new Error(errorMessage);
+    }
+
+    return responseData;
+  } catch (error) {
+    console.error(`Error in API call to ${endpoint}:`, error);
+    throw error instanceof Error ? error : new Error("Unknown error occurred");
+  }
+};
+
+/**
+ * Auth Data Interfaces
+ */
 interface AuthData {
   email: string;
   password: string;
@@ -13,6 +38,31 @@ interface AuthResponse {
   };
 }
 
+/**
+ * Function to Sign In
+ */
+export const signIn = async (data: AuthData): Promise<AuthResponse> => {
+  return await apiFetch("/signin", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+};
+
+/**
+ * Function to Sign Up
+ */
+export const signUp = async (data: AuthData): Promise<AuthResponse> => {
+  return await apiFetch("/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+};
+
+/**
+ * Parameter Scores Interfaces
+ */
 interface ParameterScores {
   hospitals: number;
   schools: number;
@@ -35,6 +85,18 @@ interface ScoreResponse {
   parameter_scores: ParameterScores;
 }
 
+/**
+ * Function to Calculate Score
+ */
+export const calculateScore = async (latitude: number, longitude: number, userType: string): Promise<ScoreResponse> => {
+  return await apiFetch(`/calculate-score/?latitude=${latitude}&longitude=${longitude}&UType=${userType}`, {
+    method: "GET",
+  });
+};
+
+/**
+ * Location Report Interfaces
+ */
 interface LocationReport {
   latitude: number;
   longitude: number;
@@ -60,6 +122,18 @@ interface LocationReportsResponse {
   reports: LocationReport[];
 }
 
+/**
+ * Function to Get Location Reports
+ */
+export const getLocationReports = async (latitude: number, longitude: number): Promise<LocationReportsResponse> => {
+  return await apiFetch(`/get-location-reports/?latitude=${latitude}&longitude=${longitude}`, {
+    method: "GET",
+  });
+};
+
+/**
+ * Story Interfaces
+ */
 interface Story {
   id: number;
   latitude: number;
@@ -82,6 +156,25 @@ interface AreaStoriesResponse {
   };
 }
 
+/**
+ * Function to Get Area Stories
+ */
+export const getAreaStories = async (latitude: number, longitude: number): Promise<AreaStoriesResponse> => {
+  return await apiFetch(`/get-area-stories/?latitude=${latitude}&longitude=${longitude}`, {
+    method: "GET",
+  });
+};
+
+/**
+ * Function to Upvote a Story
+ */
+export const upvoteStory = async (storyId: number): Promise<void> => {
+  await apiFetch(`/upvote-story/${storyId}`, { method: "POST" });
+};
+
+/**
+ * Submit Story Interfaces
+ */
 interface SubmitStoryData {
   latitude: number;
   longitude: number;
@@ -92,6 +185,20 @@ interface SubmitStoryData {
   [key: string]: number | string; // Allow for dynamic parameters
 }
 
+/**
+ * Function to Submit an Area Story
+ */
+export const submitAreaStory = async (data: SubmitStoryData): Promise<any> => {
+  return await apiFetch("/submit-area-story/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+};
+
+/**
+ * Submit Report Interfaces
+ */
 interface ReportData {
   latitude: number;
   longitude: number;
@@ -100,152 +207,13 @@ interface ReportData {
   };
 }
 
-export const signIn = async (data: AuthData): Promise<AuthResponse> => {
-  try {
-    const response = await fetch("http://192.168.0.103:8000/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const responseData = await response.json();
-    console.log("Sign in response:", responseData);
-
-    // Return the response data even if it's not successful
-    // so we can show the proper error message
-    return responseData;
-  } catch (error) {
-    console.error("Sign in error:", error);
-    throw new Error("Failed to connect to the server");
-  }
-};
-
-export const signUp = async (data: AuthData): Promise<AuthResponse> => {
-  try {
-    const response = await fetch("http://192.168.0.103:8000/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const responseData = await response.json();
-    console.log("Sign up response:", responseData);
-
-    // Return the response data even if it's not successful
-    // so we can show the proper error message
-    return responseData;
-  } catch (error) {
-    console.error("Sign up error:", error);
-    throw new Error("Failed to connect to the server");
-  }
-};
-
-export const calculateScore = async (latitude: number, longitude: number, userType: string): Promise<ScoreResponse> => {
-  try {
-    const response = await fetch(`http://192.168.0.103:8000/calculate-score/?latitude=${latitude}&longitude=${longitude}&UType=${userType}`);
-    return await response.json();
-  } catch (error) {
-    console.error("Error calculating score:", error);
-    throw error;
-  }
-};
-
-export const getLocationReports = async (latitude: number, longitude: number): Promise<LocationReportsResponse> => {
-  try {
-    const response = await fetch(`http://192.168.0.103:8000/get-location-reports/?latitude=${latitude}&longitude=${longitude}`);
-    return await response.json();
-  } catch (error) {
-    console.error("Error getting location reports:", error);
-    throw error;
-  }
-};
-
-export const getAreaStories = async (latitude: number, longitude: number): Promise<AreaStoriesResponse> => {
-  try {
-    const response = await fetch(`http://192.168.0.103:8000/get-area-stories/?latitude=${latitude}&longitude=${longitude}`);
-    return await response.json();
-  } catch (error) {
-    console.error("Error getting area stories:", error);
-    throw error;
-  }
-};
-
-export const upvoteStory = async (storyId: number): Promise<void> => {
-  try {
-    await fetch(`http://192.168.0.103:8000/upvote-story/${storyId}`, {
-      method: "POST",
-    });
-  } catch (error) {
-    console.error("Error upvoting story:", error);
-    throw error;
-  }
-};
-
-export const submitAreaStory = async (data: SubmitStoryData): Promise<any> => {
-  try {
-    // Log the incoming data
-    console.log("Story data received by API:", JSON.stringify(data, null, 2));
-
-    // Validate data structure
-    if (!data.latitude || !data.longitude || !data.email) {
-      throw new Error("Missing required fields: latitude, longitude, or email");
-    }
-
-    const response = await fetch("http://192.168.0.103:8000/submit-area-story/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    // Log the raw response
-    console.log("Raw response status:", response.status);
-    console.log("Raw response status text:", response.statusText);
-
-    const responseData = await response.json();
-    console.log("Server response data:", JSON.stringify(responseData, null, 2));
-
-    if (!response.ok) {
-      const errorMessage = responseData.detail || responseData.message || response.statusText || "Failed to submit story";
-      console.error("Error response:", errorMessage);
-      throw new Error(errorMessage);
-    }
-
-    return responseData;
-  } catch (error) {
-    console.error("Error in submitAreaStory:", error);
-    throw error;
-  }
-};
-
+/**
+ * Function to Submit a Report
+ */
 export const submitReport = async (data: ReportData): Promise<void> => {
-  try {
-    const response = await fetch("http://192.168.0.103:8000/submit-report/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const responseData = await response.json();
-    console.log("Report submission response:", responseData);
-
-    if (!response.ok) {
-      throw new Error(responseData.detail || responseData.message || "Failed to submit report");
-    }
-
-    return responseData;
-  } catch (error) {
-    console.error("Error submitting report:", error);
-    if (error instanceof Error) {
-      throw new Error(`Failed to submit report: ${error.message}`);
-    }
-    throw new Error("Failed to submit report");
-  }
+  await apiFetch("/submit-report/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
 };
