@@ -38,13 +38,13 @@ export default function ComparePage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div>
             <h2 className="text-2xl font-semibold mb-4">Location 1</h2>
-            <Map onLocationSelect={(lat, lon, address) => setLocation1({ lat, lon, address })} />
+            <Map onLocationSelect={(lat, lon, address) => setLocation1({ lat, lon, address })} userType="general" />
             <div className="mt-4">
             </div>
           </div>
           <div>
             <h2 className="text-2xl font-semibold mb-4">Location 2</h2>
-            <Map onLocationSelect={(lat, lon, address) => setLocation2({ lat, lon, address })} />
+            <Map onLocationSelect={(lat, lon, address) => setLocation2({ lat, lon, address })} userType="general" />
             <div className="mt-4">
             </div>
           </div>
