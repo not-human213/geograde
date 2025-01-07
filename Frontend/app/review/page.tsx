@@ -233,7 +233,7 @@ const Review = () => {
 
         <div className="grid grid-cols-5 gap-8 lg:gap-8">
           <div className="pl-16 pr-16 col-span-5 border-r-8">
-            <Map onLocationSelect={(lat, lon, address) => setSelectedLocation({ lat, lon, address })} />
+            <Map onLocationSelect={(lat, lon, address) => setSelectedLocation({ lat, lon, address })} userType="general" />
           </div>
         </div>
 
