@@ -1,6 +1,6 @@
 "use client"; // Ensure this is marked for client-side rendering
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -58,8 +58,6 @@ const reviewSchema = z
   })
   .refine(
     (data) => {
-      // Require at least one type of input:
-      // Either some checkboxes selected OR some text fields filled
       const hasCheckedBoxes = Object.values(data.goodThings).some(Boolean) || Object.values(data.badThings).some(Boolean);
       const hasTextInput = !!data.goodAndUnderrated || !!data.underratedThings || !!data.funFact;
 
@@ -81,8 +79,15 @@ const Review = () => {
     address: string;
   }>();
 
-  // Get user's email from localStorage or context
-  const userEmail = localStorage.getItem("userEmail") || ""; // You might want to use a proper auth context instead
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Ensure localStorage is accessed only in the browser
+    if (typeof window !== "undefined") {
+      const storedEmail = localStorage.getItem("userEmail");
+      setUserEmail(storedEmail || "");
+    }
+  }, []); // This will run once when the component mounts
 
   const {
     control,
@@ -109,7 +114,6 @@ const Review = () => {
       // Submit the area story if any story fields are filled
       if (data.goodAndUnderrated || data.underratedThings || data.funFact) {
         try {
-          // Convert good things to parameters with value 1
           const goodThingsParams = Object.entries(data.goodThings)
             .filter(([_, selected]) => selected)
             .reduce(
@@ -120,7 +124,6 @@ const Review = () => {
               {}
             );
 
-          // Convert bad things to parameters with value -1
           const badThingsParams = Object.entries(data.badThings)
             .filter(([_, selected]) => selected)
             .reduce(
@@ -206,7 +209,6 @@ const Review = () => {
     }
   };
 
-  // Debugging: Check if `watch` is capturing the data
   const watchData = watch(); // Capture the form values
   console.log("Current Form Data:", watchData); // Add this to watch form data changes
 
