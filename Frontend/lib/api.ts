@@ -102,7 +102,7 @@ interface ReportData {
 
 export const signIn = async (data: AuthData): Promise<AuthResponse> => {
   try {
-    const response = await fetch("http://100.84.197.86:8000/signin", {
+    const response = await fetch("http://192.168.0.103:8000/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -124,7 +124,7 @@ export const signIn = async (data: AuthData): Promise<AuthResponse> => {
 
 export const signUp = async (data: AuthData): Promise<AuthResponse> => {
   try {
-    const response = await fetch("http://100.84.197.86:8000/signup", {
+    const response = await fetch("http://192.168.0.103:8000/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -146,7 +146,7 @@ export const signUp = async (data: AuthData): Promise<AuthResponse> => {
 
 export const calculateScore = async (latitude: number, longitude: number, userType: string): Promise<ScoreResponse> => {
   try {
-    const response = await fetch(`http://100.84.197.86:8000/calculate-score/?latitude=${latitude}&longitude=${longitude}&UType=${userType}`);
+    const response = await fetch(`http://192.168.0.103:8000/calculate-score/?latitude=${latitude}&longitude=${longitude}&UType=${userType}`);
     return await response.json();
   } catch (error) {
     console.error("Error calculating score:", error);
@@ -156,7 +156,7 @@ export const calculateScore = async (latitude: number, longitude: number, userTy
 
 export const getLocationReports = async (latitude: number, longitude: number): Promise<LocationReportsResponse> => {
   try {
-    const response = await fetch(`http://100.84.197.86:8000/get-location-reports/?latitude=${latitude}&longitude=${longitude}`);
+    const response = await fetch(`http://192.168.0.103:8000/get-location-reports/?latitude=${latitude}&longitude=${longitude}`);
     return await response.json();
   } catch (error) {
     console.error("Error getting location reports:", error);
@@ -166,7 +166,7 @@ export const getLocationReports = async (latitude: number, longitude: number): P
 
 export const getAreaStories = async (latitude: number, longitude: number): Promise<AreaStoriesResponse> => {
   try {
-    const response = await fetch(`http://100.84.197.86:8000/get-area-stories/?latitude=${latitude}&longitude=${longitude}`);
+    const response = await fetch(`http://192.168.0.103:8000/get-area-stories/?latitude=${latitude}&longitude=${longitude}`);
     return await response.json();
   } catch (error) {
     console.error("Error getting area stories:", error);
@@ -176,7 +176,7 @@ export const getAreaStories = async (latitude: number, longitude: number): Promi
 
 export const upvoteStory = async (storyId: number): Promise<void> => {
   try {
-    await fetch(`http://100.84.197.86:8000/upvote-story/${storyId}`, {
+    await fetch(`http://192.168.0.103:8000/upvote-story/${storyId}`, {
       method: "POST",
     });
   } catch (error) {
@@ -195,7 +195,7 @@ export const submitAreaStory = async (data: SubmitStoryData): Promise<any> => {
       throw new Error("Missing required fields: latitude, longitude, or email");
     }
 
-    const response = await fetch("http://100.84.197.86:8000/submit-area-story/", {
+    const response = await fetch("http://192.168.0.103:8000/submit-area-story/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -225,7 +225,7 @@ export const submitAreaStory = async (data: SubmitStoryData): Promise<any> => {
 
 export const submitReport = async (data: ReportData): Promise<void> => {
   try {
-    const response = await fetch("http://100.84.197.86:8000/submit-report/", {
+    const response = await fetch("http://192.168.0.103:8000/submit-report/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
