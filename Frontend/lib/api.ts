@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://geogradeapi.nothuman.lol"; // Centralized API Base URL
+const API_BASE_URL = "http://127.0.0.1:8000"; // Centralized API Base URL
 
 /**
  * Centralized fetch utility to handle API requests with error handling
