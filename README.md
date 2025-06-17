@@ -1,4 +1,4 @@
-# GeoGrade: Machine Learning-based Global Building Footprint Mapping
+# GeoGrade: Analyze and compare areas based on key livability factors.
 
 ## Overview
 
